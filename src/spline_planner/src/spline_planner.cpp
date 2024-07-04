@@ -7,6 +7,7 @@
 #include <tf2/utils.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include "spline_planner/dubins.h"
+#include "spline_planner/reed_shepp.h"
 
 // register this planner as a BaseGlobalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(spline_planner::SplinePlanner,
@@ -70,8 +71,10 @@ bool SplinePlanner::makePlan(const geometry_msgs::PoseStamped& start,
 bool SplinePlanner::makePlan(
     const std::vector<geometry_msgs::PoseStamped>& waypoints,
     std::vector<geometry_msgs::PoseStamped>& plan) {
-  std::shared_ptr<Dubins> dubins = std::make_shared<Dubins>();
-  plan = dubins->generate(waypoints);
+  // std::shared_ptr<Dubins> dubins = std::make_shared<Dubins>();
+  // plan = dubins->generate(waypoints);
+  std::shared_ptr<ReedShepp> rs = std::make_shared<ReedShepp>();
+  plan = rs->generate(waypoints);
   return (plan.empty()) ? false : true;
 }
 

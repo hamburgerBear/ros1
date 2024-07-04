@@ -34,7 +34,11 @@ catkin_package(
     tf2_ros
 )
 
-add_library(spline_planner src/spline_planner.cpp src/dubins.cpp)
+add_library(spline_planner src/spline_planner.cpp 
+  src/dubins.cpp
+  src/reed_shepp.cpp
+)
+
 add_dependencies(spline_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(spline_planner
     ${catkin_LIBRARIES}

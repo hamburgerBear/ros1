@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /Global Plan2
       Splitter Ratio: 0.5
     Tree Height: 530
   - Class: rviz/Selection
@@ -196,7 +197,7 @@ Visualization Manager:
       Marker Topic: /visual/start
       Name: Start
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -204,7 +205,7 @@ Visualization Manager:
       Marker Topic: /visual/goal
       Name: Goal
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -220,8 +221,8 @@ Visualization Manager:
       Class: rviz/Path
       Color: 0; 255; 0
       Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
+      Head Diameter: 0.009999999776482582
+      Head Length: 0.009999999776482582
       Length: 0.30000001192092896
       Line Style: Lines
       Line Width: 0.029999999329447746
@@ -231,10 +232,10 @@ Visualization Manager:
         Y: 0
         Z: 0
       Pose Color: 255; 85; 255
-      Pose Style: None
+      Pose Style: Arrows
       Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
+      Shaft Diameter: 0.009999999776482582
+      Shaft Length: 0.009999999776482582
       Topic: /visual/global_plan
       Unreliable: false
       Value: true
@@ -266,15 +267,15 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 2.6617636680603027
+      Distance: 2.5508718490600586
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -13.313699722290039
-        Y: 3.876879930496216
+        X: 13.836921691894531
+        Y: -8.707362174987793
         Z: 1.1444091796875e-5
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
@@ -303,4 +304,4 @@ Window Geometry:
     collapsed: false
   Width: 1389
   X: 531
-  Y: 184
+  Y: 154
