@@ -73,6 +73,12 @@ namespace nav_core {
         return makePlan(start, goal, plan);
       }
 
+      virtual bool makePlan(const std::vector<geometry_msgs::PoseStamped>& waypoints, 
+                            std::vector<geometry_msgs::PoseStamped>& plan)
+      {
+        return false;
+      }
+
       /**
        * @brief  Initialization function for the BaseGlobalPlanner
        * @param  name The name of this planner
@@ -85,8 +91,11 @@ namespace nav_core {
        */
       virtual ~BaseGlobalPlanner(){}
 
+      std::string name() { return name_; }
+
     protected:
       BaseGlobalPlanner(){}
+      std::string name_;
   };
 };  // namespace nav_core
 

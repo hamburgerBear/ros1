@@ -45,6 +45,7 @@
 #include <geometry_msgs/Twist.h>
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include "move_base/visualization.h"
 
 namespace move_base {
 
@@ -104,7 +105,10 @@ namespace move_base {
     //they won't get any useful information back about its status, but this is useful for tools
     //like nav_view and rviz
     ros::NodeHandle simple_nh("move_base_simple");
+
+    start_sub_ = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 1, boost::bind(&MoveBase::startCB, this, _1));
     goal_sub_ = simple_nh.subscribe<geometry_msgs::PoseStamped>("goal", 1, boost::bind(&MoveBase::goalCB, this, _1));
+    waypoint_sub_ = nh.subscribe<geometry_msgs::PointStamped>("clicked_point", 1, boost::bind(&MoveBase::waypointCB, this, _1));
 
     //we'll assume the radius of the robot to be consistent with what's specified for the costmaps
     private_nh.param("local_costmap/inscribed_radius", inscribed_radius_, 0.325);
@@ -177,6 +181,8 @@ namespace move_base {
     dsrv_ = new dynamic_reconfigure::Server<move_base::MoveBaseConfig>(ros::NodeHandle("~"));
     dynamic_reconfigure::Server<move_base::MoveBaseConfig>::CallbackType cb = boost::bind(&MoveBase::reconfigureCB, this, _1, _2);
     dsrv_->setCallback(cb);
+
+    Visualization::getInstance()->initialize(nh);
   }
 
   void MoveBase::reconfigureCB(move_base::MoveBaseConfig &config, uint32_t level){
@@ -272,13 +278,39 @@ namespace move_base {
     last_config_ = config;
   }
 
+  void MoveBase::startCB(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& start){
+    start_.header =  start->header;
+    start_.pose = start->pose.pose;
+    ROS_INFO("Add start = {%f, %f}", start_.pose.position.x, start_.pose.position.y);
+    Visualization::getInstance()->publishStart(start_);
+    waypoints_.clear();
+    Visualization::getInstance()->publishWaypoints(waypoints_);
+  }
+  
   void MoveBase::goalCB(const geometry_msgs::PoseStamped::ConstPtr& goal){
     ROS_DEBUG_NAMED("move_base","In ROS goal callback, wrapping the PoseStamped in the action message and re-sending to the server.");
+    goal_ = *goal;
+    ROS_INFO("Add goal = {%f, %f}", goal_.pose.position.x, goal_.pose.position.y);
+    Visualization::getInstance()->publishGoal(goal_);
+
     move_base_msgs::MoveBaseActionGoal action_goal;
     action_goal.header.stamp = ros::Time::now();
     action_goal.goal.target_pose = *goal;
-
     action_goal_pub_.publish(action_goal);
+  }
+
+  void MoveBase::waypointCB(const geometry_msgs::PointStamped::ConstPtr& waypoint){
+    geometry_msgs::PoseStamped pose;
+    pose.header = waypoint->header;
+    pose.pose.position.x = waypoint->point.x;
+    pose.pose.position.y = waypoint->point.y;
+    tf2::Quaternion quaternion;
+    quaternion.setRPY(0.0, 0.0, 0.0);
+    pose.pose.orientation = tf2::toMsg(quaternion);
+    waypoints_.push_back(pose);
+    ROS_INFO("Add waypoint = {%f, %f}, waypoint size = {%ld}", 
+      pose.pose.position.x, pose.pose.position.y, waypoints_.size());
+    Visualization::getInstance()->publishWaypoints(waypoints_);
   }
 
   void MoveBase::clearCostmapWindows(double size_x, double size_y){
@@ -474,6 +506,21 @@ namespace move_base {
   bool MoveBase::makePlan(const geometry_msgs::PoseStamped& goal, std::vector<geometry_msgs::PoseStamped>& plan){
     boost::unique_lock<costmap_2d::Costmap2D::mutex_t> lock(*(planner_costmap_ros_->getCostmap()->getMutex()));
 
+    /* 改写planner */
+    if(planner_->name() == "SplinePlanner") {
+      std::vector<geometry_msgs::PoseStamped> waypoints;
+      waypoints.push_back(start_);
+      waypoints.insert(waypoints.end(), waypoints_.begin(), waypoints_.end());
+      waypoints.push_back(goal_);
+      plan.clear();
+      if(!planner_->makePlan(waypoints, plan)) {
+        ROS_ERROR("Spline planner fail.");
+        return false;
+      }
+
+      return true;
+    } 
+
     //make sure to set the plan to be empty initially
     plan.clear();
 
@@ -590,11 +637,11 @@ namespace move_base {
       //run planner
       planner_plan_->clear();
       bool gotPlan = n.ok() && makePlan(temp_goal, *planner_plan_);
-
       if(gotPlan){
         ROS_DEBUG_NAMED("move_base_plan_thread","Got Plan with %zu points!", planner_plan_->size());
         //pointer swap the plans under mutex (the controller will pull from latest_plan_)
         std::vector<geometry_msgs::PoseStamped>* temp_plan = planner_plan_;
+        Visualization::getInstance()->publishPlan(*planner_plan_);
 
         lock.lock();
         planner_plan_ = latest_plan_;
@@ -648,6 +695,7 @@ namespace move_base {
     }
   }
 
+  // executeCb = 启动规划任务
   void MoveBase::executeCb(const move_base_msgs::MoveBaseGoalConstPtr& move_base_goal)
   {
     if(!isQuaternionValid(move_base_goal->target_pose.pose.orientation)){

@@ -1,0 +1,7 @@
+<library path="lib/libspline_planner">
+  <class name="spline_planner/SplinePlanner" type="spline_planner::SplinePlanner" base_class_type="nav_core::BaseGlobalPlanner">
+    <description>
+      None
+    </description>
+  </class>
+</library>

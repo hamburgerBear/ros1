@@ -48,7 +48,9 @@
 #include <nav_core/base_local_planner.h>
 #include <nav_core/base_global_planner.h>
 #include <nav_core/recovery_behavior.h>
+#include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <costmap_2d/costmap_2d_ros.h>
 #include <costmap_2d/costmap_2d.h>
 #include <nav_msgs/GetPlan.h>
@@ -156,7 +158,11 @@ namespace move_base {
        */
       void resetState();
 
+      void startCB(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& start);
+
       void goalCB(const geometry_msgs::PoseStamped::ConstPtr& goal);
+
+      void waypointCB(const geometry_msgs::PointStamped::ConstPtr& waypoint);
 
       void planThread();
 
@@ -196,7 +202,9 @@ namespace move_base {
       uint32_t planning_retries_;
       double conservative_reset_dist_, clearing_radius_;
       ros::Publisher current_goal_pub_, vel_pub_, action_goal_pub_, recovery_status_pub_;
+      ros::Subscriber start_sub_;
       ros::Subscriber goal_sub_;
+      ros::Subscriber waypoint_sub_;
       ros::ServiceServer make_plan_srv_, clear_costmaps_srv_;
       bool shutdown_costmaps_, clearing_rotation_allowed_, recovery_behavior_enabled_;
       bool make_plan_clear_costmap_, make_plan_add_unreachable_goal_;
@@ -233,7 +241,9 @@ namespace move_base {
       move_base::MoveBaseConfig default_config_;
       bool setup_, p_freq_change_, c_freq_change_;
       bool new_global_plan_;
+
+      geometry_msgs::PoseStamped start_, goal_;
+      std::vector<geometry_msgs::PoseStamped> waypoints_;
   };
 };
 #endif
-
