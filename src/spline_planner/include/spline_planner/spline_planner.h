@@ -70,11 +70,14 @@ class SplinePlanner : public nav_core::BaseGlobalPlanner {
 
   /**
    * @brief Given waypoints in the world, compute a plan
+   * @param spline_type
    * @param waypoints
    * @param plan The plan... filled by the planner
    * @return True if a valid plan was found, false otherwise
    */
-  bool makePlan(const std::vector<geometry_msgs::PoseStamped>& waypoints,
+  bool makePlan(const std::string& spline_type,
+                const double& spline_resolution,
+                const std::vector<geometry_msgs::PoseStamped>& waypoints,
                 std::vector<geometry_msgs::PoseStamped>& plan);
 
  private:

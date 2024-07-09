@@ -738,13 +738,8 @@ std::vector<geometry_msgs::PoseStamped> ReedShepp::generate(
   geometry_msgs::PoseStamped pose = goal;
   ReedsSheppStateSpace::StateXYT rs_pose;
   ReedsSheppStateSpace::ReedsSheppPath rs_path = rs_space.reedsShepp(q0, q1);
-  // length_ = rs_space.distance(q0, q1);
+
   length_ = rs_path.length();
-  //疑问1,两个length不一致，思考一下EBAND中泡泡的半径？
-  //疑问2,RS曲线类型能否配置，如不后退
-  //疑问3,DUBINS和RS均未考虑最后一个终点的插入
-  // std::cout << "length_ = " << rs_space.distance(q0, q1) << std::endl;
-  // std::cout << "path.length() =" << rs_path.length() << std::endl;
   for (double seg = 0.0; seg < rs_path.length(); seg += resolution) {
     rs_pose = rs_space.interpolate(q0, rs_path, seg);
     pose.pose.position.x = rs_pose.x;
@@ -755,6 +750,11 @@ std::vector<geometry_msgs::PoseStamped> ReedShepp::generate(
     out.push_back(pose);
   }
   
+  if(hypot(goal.pose.position.x - out.back().pose.position.x, 
+        goal.pose.position.y - out.back().pose.position.y) < (resolution * 0.3))
+    out.pop_back();
+
+  out.push_back(goal);
   return std::move(out);
 }
 

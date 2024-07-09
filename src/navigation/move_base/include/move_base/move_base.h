@@ -244,6 +244,8 @@ namespace move_base {
 
       geometry_msgs::PoseStamped start_, goal_;
       std::vector<geometry_msgs::PoseStamped> waypoints_;
+      std::string spline_type_;
+      double spline_resolution_;
   };
 };
 #endif

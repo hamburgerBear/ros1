@@ -387,6 +387,11 @@ std::vector<geometry_msgs::PoseStamped> Dubins::generate(
   for(auto& pose : out)
     pose.header = goal.header;
 
+  if(hypot(goal.pose.position.x - out.back().pose.position.x, 
+        goal.pose.position.y - out.back().pose.position.y) < (resolution * 0.3))
+    out.pop_back();
+
+  out.push_back(goal);
   return std::move(out);
 }
 

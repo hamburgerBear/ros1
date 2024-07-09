@@ -37,6 +37,7 @@ catkin_package(
 add_library(spline_planner src/spline_planner.cpp 
   src/dubins.cpp
   src/reed_shepp.cpp
+  src/cubic_spline.cpp
 )
 
 add_dependencies(spline_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

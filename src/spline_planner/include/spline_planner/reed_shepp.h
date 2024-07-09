@@ -78,8 +78,8 @@
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef FREESPACE_PLANNING_ALGORITHMS__REEDS_SHEPP_HPP_
-#define FREESPACE_PLANNING_ALGORITHMS__REEDS_SHEPP_HPP_
+#ifndef REED_SHEPP_H
+#define REED_SHEPP_H
 
 #include <cassert>
 #include <functional>
@@ -156,4 +156,4 @@ class ReedShepp {
 
 }  // namespace spline_planner
 
-#endif  // FREESPACE_PLANNING_ALGORITHMS__REEDS_SHEPP_HPP_
+#endif  // REED_SHEPP_H

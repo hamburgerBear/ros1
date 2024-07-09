@@ -70,6 +70,8 @@ namespace move_base {
     std::string global_planner, local_planner;
     private_nh.param("base_global_planner", global_planner, std::string("navfn/NavfnROS"));
     private_nh.param("base_local_planner", local_planner, std::string("base_local_planner/TrajectoryPlannerROS"));
+    private_nh.param("spline_type", spline_type_, std::string("None"));
+    private_nh.param("spline_resolution", spline_resolution_, -1.0);
     private_nh.param("global_costmap/robot_base_frame", robot_base_frame_, std::string("base_link"));
     private_nh.param("global_costmap/global_frame", global_frame_, std::string("map"));
     private_nh.param("planner_frequency", planner_frequency_, 0.0);
@@ -216,6 +218,8 @@ namespace move_base {
       c_freq_change_ = true;
     }
 
+    spline_type_ = config.spline_type;
+    spline_resolution_ = config.spline_resolution;
     planner_patience_ = config.planner_patience;
     controller_patience_ = config.controller_patience;
     max_planning_retries_ = config.max_planning_retries;
@@ -513,7 +517,7 @@ namespace move_base {
       waypoints.insert(waypoints.end(), waypoints_.begin(), waypoints_.end());
       waypoints.push_back(goal_);
       plan.clear();
-      if(!planner_->makePlan(waypoints, plan)) {
+      if(!planner_->makePlan(spline_type_, spline_resolution_, waypoints, plan)) {
         ROS_ERROR("Spline planner fail.");
         return false;
       }

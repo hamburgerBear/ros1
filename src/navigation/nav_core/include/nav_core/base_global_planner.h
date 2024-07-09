@@ -73,7 +73,9 @@ namespace nav_core {
         return makePlan(start, goal, plan);
       }
 
-      virtual bool makePlan(const std::vector<geometry_msgs::PoseStamped>& waypoints, 
+      virtual bool makePlan(const std::string& spline_type,
+                            const double& spline_resolution,
+                            const std::vector<geometry_msgs::PoseStamped>& waypoints, 
                             std::vector<geometry_msgs::PoseStamped>& plan)
       {
         return false;

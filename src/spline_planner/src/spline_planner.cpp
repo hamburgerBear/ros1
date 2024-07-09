@@ -8,6 +8,7 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include "spline_planner/dubins.h"
 #include "spline_planner/reed_shepp.h"
+#include "spline_planner/cubic_spline.h"
 
 // register this planner as a BaseGlobalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(spline_planner::SplinePlanner,
@@ -69,12 +70,33 @@ bool SplinePlanner::makePlan(const geometry_msgs::PoseStamped& start,
 }
 
 bool SplinePlanner::makePlan(
+    const std::string& spline_type,
+    const double& spline_resolution,
     const std::vector<geometry_msgs::PoseStamped>& waypoints,
     std::vector<geometry_msgs::PoseStamped>& plan) {
-  // std::shared_ptr<Dubins> dubins = std::make_shared<Dubins>();
-  // plan = dubins->generate(waypoints);
-  std::shared_ptr<ReedShepp> rs = std::make_shared<ReedShepp>();
-  plan = rs->generate(waypoints);
+
+  if(spline_type == "dubins") {
+    std::shared_ptr<Dubins> dubins = std::make_shared<Dubins>();
+    if(spline_resolution > 0.0)
+      plan = dubins->generate(waypoints, spline_resolution);
+    else 
+      plan = dubins->generate(waypoints, spline_resolution);
+  } else if(spline_type == "reed_shepp") {
+    std::shared_ptr<ReedShepp> rs = std::make_shared<ReedShepp>();
+    if(spline_resolution > 0.0)
+      plan = rs->generate(waypoints, spline_resolution);
+    else
+      plan = rs->generate(waypoints);
+  } else if(spline_type == "cubic_spline") {
+    std::shared_ptr<CubicSpline> cs = std::make_shared<CubicSpline>();
+    if(spline_resolution > 0.0)
+      plan = cs->generate(waypoints, spline_resolution);
+    else 
+      plan = cs->generate(waypoints);
+  } else {
+    std::cout << "未定义的样条规划器类型" << std::endl;
+  }
+
   return (plan.empty()) ? false : true;
 }
 
