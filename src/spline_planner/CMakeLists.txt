@@ -38,6 +38,12 @@ add_library(spline_planner src/spline_planner.cpp
   src/dubins.cpp
   src/reed_shepp.cpp
   src/cubic_spline.cpp
+  src/line_iterator.cpp
+  src/quadratic_bezier.cpp
+  src/cubic_bezier.cpp
+  src/quintic_bezier.cpp
+  src/arc.cpp
+  src/rounded.cpp
 )
 
 add_dependencies(spline_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

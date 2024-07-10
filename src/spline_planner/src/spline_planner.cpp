@@ -9,6 +9,12 @@
 #include "spline_planner/dubins.h"
 #include "spline_planner/reed_shepp.h"
 #include "spline_planner/cubic_spline.h"
+#include "spline_planner/line_iterator.h"
+#include "spline_planner/quadratic_bezier.h"
+#include "spline_planner/cubic_bezier.h"
+#include "spline_planner/quintic_bezier.h"
+#include "spline_planner/arc.h"
+#include "spline_planner/rounded.h"
 
 // register this planner as a BaseGlobalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(spline_planner::SplinePlanner,
@@ -93,9 +99,47 @@ bool SplinePlanner::makePlan(
       plan = cs->generate(waypoints, spline_resolution);
     else 
       plan = cs->generate(waypoints);
+  } else if(spline_type == "line_iterator") {
+    std::shared_ptr<LineIterator> li = std::make_shared<LineIterator>();
+    if(spline_resolution > 0.0)
+      plan = li->generate(waypoints, spline_resolution);
+    else 
+      plan = li->generate(waypoints);
+  } else if(spline_type == "quadratic_bezier") {
+    std::shared_ptr<QuadraticBezier> qb = std::make_shared<QuadraticBezier>();
+    if(spline_resolution > 0.0)
+      plan = qb->generate(waypoints, spline_resolution);
+    else 
+      plan = qb->generate(waypoints);
+  } else if(spline_type == "cubic_bezier") {
+    std::shared_ptr<CubicBezier> cb = std::make_shared<CubicBezier>();
+    if(spline_resolution > 0.0)
+      plan = cb->generate(waypoints, spline_resolution);
+    else 
+      plan = cb->generate(waypoints);
+  } else if(spline_type == "quintic_bezier") {
+    std::shared_ptr<QuinticBezier> qb = std::make_shared<QuinticBezier>();
+    if(spline_resolution > 0.0)
+      plan = qb->generate(waypoints, spline_resolution);
+    else 
+      plan = qb->generate(waypoints);
+  } else if(spline_type == "arc") {
+    std::shared_ptr<Arc> arc = std::make_shared<Arc>();
+    if(spline_resolution > 0.0)
+      plan = arc->generate(waypoints, spline_resolution);
+    else 
+      plan = arc->generate(waypoints);
+  } else if(spline_type == "rounded") {
+    std::shared_ptr<Rounded> rounded = std::make_shared<Rounded>();
+    if(spline_resolution > 0.0)
+      plan = rounded->generate(waypoints, spline_resolution);
+    else 
+      plan = rounded->generate(waypoints);
   } else {
     std::cout << "未定义的样条规划器类型" << std::endl;
   }
+
+  
 
   return (plan.empty()) ? false : true;
 }
