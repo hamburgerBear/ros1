@@ -15,6 +15,7 @@
 #include "spline_planner/quintic_bezier.h"
 #include "spline_planner/arc.h"
 #include "spline_planner/rounded.h"
+#include "spline_planner/cubic_polynomial.h"
 
 // register this planner as a BaseGlobalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(spline_planner::SplinePlanner,
@@ -135,11 +136,15 @@ bool SplinePlanner::makePlan(
       plan = rounded->generate(waypoints, spline_resolution);
     else 
       plan = rounded->generate(waypoints);
+  } else if(spline_type == "cubic_polynomial") {
+    std::shared_ptr<CubicPolynomial> spline = std::make_shared<CubicPolynomial>();
+    if(spline_resolution > 0.0)
+      plan = spline->generate(waypoints, spline_resolution);
+    else 
+      plan = spline->generate(waypoints);
   } else {
     std::cout << "未定义的样条规划器类型" << std::endl;
   }
-
-  
 
   return (plan.empty()) ? false : true;
 }
