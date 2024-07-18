@@ -82,20 +82,27 @@ std::vector<geometry_msgs::PoseStamped> CubicPolynomial::generate(
 
   geometry_msgs::PoseStamped start = in[0], goal = in[1];
   /*注意!
+  三次多项式需要给定起点的位置、速度、加速度、终点的位置，以及整段三次多项总时长。
   三次多项式轨迹采样时间间隔。不同于三次样条，时间长度是将所有路径点的欧式距离值累加，所以采样分辨率近似于时间间隔。
   而Dubins和RS曲线的轨迹长度和轨迹采样被被封装在类成员函数中，无需外部考虑。
   - 三次多项式的起点方向取决于起点的速度
-  - 三次样条根据时间间隔采样，采样点不均匀
-  - 三次样条不考虑运动学旋转半径约束*/
-  double dx0 = 0.2, ddx0 = 0.2, time_length = 8.0, time_resolution = 0.1;
-  double dy0 = 0.5, ddy0 = 0.2;
+  - 三次多项式根据时间间隔采样，采样点不均匀
+  - 三次多项式不考虑运动学旋转半径约束*/
+  double dx0 = 0.1, ddx0 = 0.2, time_length = 8.0, time_resolution = 0.1;
+  double dy0 = 0.3, ddy0 = 0.2;
   CubicPolynomialCurve1d polynomial_x(start.pose.position.x, dx0, ddx0, goal.pose.position.x, time_length);
-  CubicPolynomialCurve1d polynomial_y(start.pose.position.y, dx0, ddx0, goal.pose.position.y, time_length);
+  CubicPolynomialCurve1d polynomial_y(start.pose.position.y, dy0, ddy0, goal.pose.position.y, time_length);
 
   geometry_msgs::PoseStamped pose = goal;
   for (double t = 0.0; t < time_length; t += time_resolution) {
     pose.pose.position.x = polynomial_x.Evaluate(0, t);
     pose.pose.position.y = polynomial_y.Evaluate(0, t);
+    // std::cout << "t=" << t << "时刻, x=" << polynomial_x.Evaluate(0, t) 
+    //                        << ", x'=" << polynomial_x.Evaluate(1, t)
+    //                        << ", x''=" << polynomial_x.Evaluate(2, t) << std::endl;
+    // std::cout << "t=" << t << "时刻, y=" << polynomial_y.Evaluate(0, t) 
+    //                        << ", y'=" << polynomial_y.Evaluate(1, t)
+    //                        << ", y''=" << polynomial_y.Evaluate(2, t) << std::endl;
     out.push_back(pose);
   }
   

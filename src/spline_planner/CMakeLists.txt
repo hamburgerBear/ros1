@@ -45,6 +45,8 @@ add_library(spline_planner src/spline_planner.cpp
   src/arc.cpp
   src/rounded.cpp
   src/cubic_polynomial.cpp
+  src/quartic_polynomial.cpp
+  src/quintic_polynomial.cpp
 )
 
 add_dependencies(spline_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

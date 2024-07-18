@@ -16,6 +16,8 @@
 #include "spline_planner/arc.h"
 #include "spline_planner/rounded.h"
 #include "spline_planner/cubic_polynomial.h"
+#include "spline_planner/quartic_polynomial.h"
+#include "spline_planner/quintic_polynomial.h"
 
 // register this planner as a BaseGlobalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(spline_planner::SplinePlanner,
@@ -138,6 +140,18 @@ bool SplinePlanner::makePlan(
       plan = rounded->generate(waypoints);
   } else if(spline_type == "cubic_polynomial") {
     std::shared_ptr<CubicPolynomial> spline = std::make_shared<CubicPolynomial>();
+    if(spline_resolution > 0.0)
+      plan = spline->generate(waypoints, spline_resolution);
+    else 
+      plan = spline->generate(waypoints);
+  } else if(spline_type == "quartic_polynomial") {
+    std::shared_ptr<QuarticPolynomial> spline = std::make_shared<QuarticPolynomial>();
+    if(spline_resolution > 0.0)
+      plan = spline->generate(waypoints, spline_resolution);
+    else 
+      plan = spline->generate(waypoints);
+  } else if(spline_type == "quintic_polynomial") {
+    std::shared_ptr<QuinticPolynomial> spline = std::make_shared<QuinticPolynomial>();
     if(spline_resolution > 0.0)
       plan = spline->generate(waypoints, spline_resolution);
     else 
