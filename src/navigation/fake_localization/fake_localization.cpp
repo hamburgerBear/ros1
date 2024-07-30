@@ -202,6 +202,7 @@ class FakeOdomNode
       }
 
       geometry_msgs::TransformStamped trans;
+      transform_tolerance_ = 0.0;
       trans.header.stamp = message->header.stamp + ros::Duration(transform_tolerance_);
       trans.header.frame_id = global_frame_id_;
       trans.child_frame_id = message->header.frame_id;

@@ -476,7 +476,8 @@ namespace move_base {
     for(unsigned int i = 0; i < global_plan.size(); ++i){
       resp.plan.poses[i] = global_plan[i];
     }
-
+    //test.测试，需要删除
+    Visualization::getInstance()->publishPlan(global_plan);
     return true;
   }
 

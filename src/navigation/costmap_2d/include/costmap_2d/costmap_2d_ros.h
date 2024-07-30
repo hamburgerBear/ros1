@@ -182,7 +182,7 @@ public:
    * on the "footprint" topic. */
   std::vector<geometry_msgs::Point> getRobotFootprint()
   {
-    return padded_footprint_;
+    return padded_footprint_; 
   }
 
   /** @brief Return the current unpadded footprint of the robot as a vector of points.
