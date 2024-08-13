@@ -49,7 +49,7 @@ void SmacPlannerHybrid::initialize(std::string name,
     _allow_unknown = false;
     _max_iterations = 10000000;   //1000000
     bool smooth_path = false;
-    _minimum_turning_radius_global_coords = 0.8;
+    _minimum_turning_radius_global_coords = 0.4;
     _search_info.cache_obstacle_heuristic = false;
     _search_info.reverse_penalty = 2.0;
     _search_info.change_penalty = 0.0;
@@ -61,6 +61,7 @@ void SmacPlannerHybrid::initialize(std::string name,
     _search_info.analytic_expansion_max_length =
         analytic_expansion_max_length_m / costmap_->getResolution();
     _max_planning_time = 50000.0;
+    _tolerance = 0.1;
     _lookup_table_size = 20.0;
     _motion_model_for_search = "DUBIN";
     _motion_model = fromString(_motion_model_for_search);

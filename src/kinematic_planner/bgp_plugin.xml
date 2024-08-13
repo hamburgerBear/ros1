@@ -1,0 +1,7 @@
+<library path="lib/libkinematic_planner">
+  <class name="kinematic_planner/KinematicPlanner" type="kinematic_planner::KinematicPlanner" base_class_type="nav_core::BaseGlobalPlanner">
+    <description>
+      A kinematic planner based on graph search
+    </description>
+  </class>
+</library>

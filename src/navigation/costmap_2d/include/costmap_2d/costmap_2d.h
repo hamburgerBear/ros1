@@ -139,6 +139,7 @@ public:
    * @param  wy Will be set to the associated world y coordinate
    */
   void mapToWorld(unsigned int mx, unsigned int my, double& wx, double& wy) const;
+  void mapToWorldLossless(float mx, float my, float& wx, float& wy) const;
 
   /**
    * @brief  Convert from world coordinates to map coordinates
@@ -159,7 +160,8 @@ public:
    * @return True if the conversion was successful (legal bounds) false otherwise
    */
   bool worldToMapContinuous(double wx, double wy, float & mx, float & my) const;
-  
+  bool worldToMapLoseless(float wx, float wy, float & mx, float & my) const;
+
   /**
    * @brief  Convert from world coordinates to map coordinates without checking for legal bounds
    * @param  wx The x world coordinate

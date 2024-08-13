@@ -1,0 +1,6 @@
+image: small_1cm.png
+resolution: 0.01
+origin: [-5.0, -4.59, 0.0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196

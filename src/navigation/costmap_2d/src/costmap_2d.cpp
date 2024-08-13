@@ -210,6 +210,12 @@ void Costmap2D::mapToWorld(unsigned int mx, unsigned int my, double& wx, double&
   wy = origin_y_ + (my + 0.5) * resolution_;
 }
 
+void Costmap2D::mapToWorldLossless(float mx, float my, float& wx, float& wy) const
+{
+  wx = origin_x_ + mx * resolution_;
+  wy = origin_y_ + my * resolution_;
+}
+
 bool Costmap2D::worldToMap(double wx, double wy, unsigned int& mx, unsigned int& my) const
 {
   if (wx < origin_x_ || wy < origin_y_)
@@ -234,6 +240,21 @@ bool Costmap2D::worldToMapContinuous(double wx, double wy, float & mx, float & m
   my = static_cast<float>((wy - origin_y_) / resolution_) + 0.5f;
 
   if (mx < size_x_ && my < size_y_) {
+    return true;
+  }
+  return false;
+}
+
+bool Costmap2D::worldToMapLoseless(float wx, float wy, float & mx, float & my) const
+{
+  if (wx < origin_x_ || wy < origin_y_) {
+    return false;
+  }
+
+  mx = (wx - origin_x_) / resolution_;
+  my = (wy - origin_y_) / resolution_;
+
+  if (static_cast<unsigned int>(mx) < size_x_ && static_cast<unsigned int>(my) < size_y_) {
     return true;
   }
   return false;

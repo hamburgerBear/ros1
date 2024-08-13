@@ -116,7 +116,9 @@ bool LocalPlannerUtil::getLocalPlan(const geometry_msgs::PoseStamped& global_pos
   }
 
   //now we'll prune the plan based on the position of the robot
-  if(limits_.prune_plan) {
+  if(1)
+  // if(limits_.prune_plan) 
+  {
     base_local_planner::prunePlan(global_pose, transformed_plan, global_plan_);
   }
   return true;
