@@ -1,0 +1,7 @@
+<library path="lib/libfollow_wall_local_planner">
+  <class name="follow_wall_local_planner/FollowWallLocalPlanner" type="follow_wall_local_planner::FollowWallLocalPlanner" base_class_type="nav_core::BaseLocalPlanner">
+    <description>
+      A implementation of a local planner using follow wall method.
+    </description>
+  </class>
+</library>

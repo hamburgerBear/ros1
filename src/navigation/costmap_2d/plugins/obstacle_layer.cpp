@@ -261,6 +261,8 @@ void ObstacleLayer::laserScanCallback(const sensor_msgs::LaserScanConstPtr& mess
     projector_.projectLaser(*message, cloud);
   }
 
+  if("/base_laser_link_0" == message->header.frame_id)
+    cloud.header.frame_id = "base_laser_link_0";
   // buffer the point cloud
   buffer->lock();
   buffer->bufferCloud(cloud);

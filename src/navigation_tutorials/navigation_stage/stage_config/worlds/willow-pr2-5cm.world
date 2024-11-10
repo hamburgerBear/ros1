@@ -1,6 +1,6 @@
 define block model
 (
-  size [0.500 0.500 0.750]
+  size [5.500 0.500 0.750]
   gui_nose 0
 )
 
@@ -16,14 +16,27 @@ define topurg ranger
   size [ 0.050 0.050 0.100 ]
 )
 
+define topurg2 ranger
+(
+  sensor(
+    range_max 30.0
+    fov 270.25
+    samples 1081
+  )
+  # generic model properties
+  color "black"
+  size [ 0.050 0.050 0.100 ]
+)
+
 define pr2 position
 (
-  size [0.800 0.600 0.250]
+  size [0.3 0.3 1.250]
   #origin [-0.050 0.000 0.000 0.000]
   origin [0.000 0.000 0.000 0.000]
   gui_nose 1
   drive "diff"
-  topurg(pose [ 0.275 0.000 0.000 0.000 ])
+  topurg(pose [ 0.000 0.000 -0.500 0.000 ])
+  topurg2(pose [ 0.000 0.000 -0.800 0.000 ])
 )
 
 define floorplan model
@@ -61,9 +74,9 @@ window
 floorplan
 ( 
   name "willow"
-  bitmap "../maps/webots_1cm.png"
+  bitmap "../maps/hospital_section.png"
   #size [10.000 9.180 1.000] #small 1cm
-  size [44.08 30.41 1.0] #1cm
+  size [54.3 22.15 1.0] 
   #size [48.25 40.4 1.0] #5cm
   pose [ 0.000 0.000 0.000 0.000 ]
 )
@@ -71,5 +84,5 @@ floorplan
 # throw in a robot
 #pr2( pose [ 5.4 3.4 0.0 28.166 ] name "pr2" color "blue")
 #pr2( pose [ 7.8 -3.1 0.0 28.166 ] name "pr2" color "blue")
-pr2( pose [ 8.17 -7.14 0.000 0.0 ] name "pr2" color "blue")
+pr2( pose [ -6.0 -9.14 0.000 0.0 ] name "pr2" color "blue")
 block( pose [ -4.269 4.001 0.000 180.000 ] color "red")
