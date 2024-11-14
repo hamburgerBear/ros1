@@ -18,7 +18,7 @@ rviz : 2D Pose Estimate 、2D Nav Goal 、Publish Point
     
 拷贝navigation/carrot_planner后修改。或参考navigation官方教程-如何创建一个全局规划器
 
-# local_planner
+# local_planner & controller
 局部规划器与全局规划器不同的是，局部规划器仅考虑局部范围，但需要额外考虑的是：
 1. 局部重规划策略
 2. 局部子目标点/起点的选择
@@ -30,3 +30,4 @@ rviz : 2D Pose Estimate 、2D Nav Goal 、Publish Point
 3. dwa planner
 4. teb planner
 5. mpc planner
+可以发现，如上的一些局部规划器，可分为基于采样、基于搜索、基于优化这三种常用规划方法。但对于控制，纯跟踪控制器也是比不可少的一部分。
