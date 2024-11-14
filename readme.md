@@ -17,3 +17,16 @@ rviz : 2D Pose Estimate 、2D Nav Goal 、Publish Point
 5. 基于优化，基于优化的方法需要在已有路径的基础上，路径可由1~4的方法生成，场景的优化方法有：基于共厄梯度下降的EBand、基于g2o优化器的TEB、基于ceres的优化器、基于osqp的优化器等。
     
 拷贝navigation/carrot_planner后修改。或参考navigation官方教程-如何创建一个全局规划器
+
+# local_planner
+局部规划器与全局规划器不同的是，局部规划器仅考虑局部范围，但需要额外考虑的是：
+1. 局部重规划策略
+2. 局部子目标点/起点的选择
+3. 局部轨迹与全局轨迹的平滑衔接
+4. 多段局部轨迹的最优选择
+常见的局部规划器有：
+1. lattice planner
+2. ego planner
+3. dwa planner
+4. teb planner
+5. mpc planner
