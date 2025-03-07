@@ -118,6 +118,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
+  ${CMAKE_CURRENT_LIST_DIR}
   include
   ${catkin_INCLUDE_DIRS}
 )
@@ -151,6 +152,11 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
+
+set(library_name "follow_wall_controller")
+add_library(${library_name} ${library_name}/${library_name}.cpp)
+add_dependencies(${library_name} ${${library_name}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(${library_name} ${catkin_LIBRARIES})
 
 #############
 ## Install ##

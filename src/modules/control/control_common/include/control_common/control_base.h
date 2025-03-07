@@ -4,41 +4,34 @@
 
 namespace control {
 
-class AlgorithmBase {
+class ControlBase {
  public:
-  using Ptr = std::shared_ptr<AlgorithmBase>;
+  struct Args {};
 
-  struct Args {
-  }
+  using Ptr = std::shared_ptr<ControlBase>;
+  using Transition = std::pair<std::string, std::shared_ptr<ControlBase::Args>>;
 
-  //   enum State {
-  // OK = 0;
+  explicit ControlBase(const std::string& name,
+                       const DependencyInjector::Ptr& injector)
+      : name_(name), injector_(injector) {}
+  virtual ~ControlBase() = default;
 
-  //   // Control module error codes start from here.
-  //   CONTROL_ERROR = 1000;
-  //   CONTROL_INIT_ERROR = 1001;
-  //   CONTROL_COMPUTE_ERROR = 1002;
-  //   CONTROL_ESTOP_ERROR = 1003;
-  //   PERFECT_CONTROL_ERROR = 1004;
+  virtual void init(std::shared_ptr<Args> args) = 0;
+  virtual void update() = 0;
+  virtual bool isFinish() = 0;
+  virtual bool isFail() = 0;
+  virtual std::pair<std::string, std::shared_ptr<ControlBase::Args>>
+  transition() {
+    return std::make_pair(name(), nullptr);
+  };
 
-  //   }
+  std::string name() { return name_; }
+  DependencyInjector::Ptr injector() { return injector_; }
 
-  explicit AlgorithmBase(const std::string& name,
-                         const DependencyInjector::Ptr& injector) {
-    name_ = name;
-    injector_ = injector;
-  }
-
-  virtual ~AlgorithmBase() = default;
-
-  virtual void enter(std::shared_ptr<Args> args) = 0;
-  virtual void execute() = 0;
-  virtual void exit() = 0;
-
-  std::string Name() { return name_; }
-
+ private:
   std::string name_;
   DependencyInjector::Ptr injector_;
+  Args goal_;
 };
 
 class PluginBase {

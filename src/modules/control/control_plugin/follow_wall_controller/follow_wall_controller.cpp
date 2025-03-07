@@ -1,17 +1,9 @@
-#include "control_plugin/base_controller.h"
-
-#include <pluginlib/class_list_macros.h>
-
-#include "control_algorithm/arc.h"
-#include "control_algorithm/rotation.h"
-#include "control_algorithm/translation.h"
-
-PLUGINLIB_EXPORT_CLASS(control::BaseController, control::PluginBase)
+#include "follow_wall_controller/follow_wall_controller.h"
 
 namespace control {
 
-bool BaseController::init(const std::string& name,
-                          const DependencyInjector::Ptr& injector) {
+bool FollowWallController::init(const std::string& name,
+                                const DependencyInjector::Ptr& injector) {
   name_ = name;
   injector_ = injector;
   // control_map_["translation"] =
@@ -21,7 +13,7 @@ bool BaseController::init(const std::string& name,
   return true;
 }
 
-void BaseController::run() {
+void FollowWallController::run() {
   // if (control_map_.find(injector_->algorithm_name_) == control_map_.end()) {
   //   ROS_WARN("Whitout this control algorithm[%s].",
   //            injector_->algorithm_name_.c_str());
@@ -31,7 +23,4 @@ void BaseController::run() {
   //   control->Run();
   // }
 }
-
-// void BaseController::reset() { control_map_.clear(); }
-
 }  // namespace control

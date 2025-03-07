@@ -4,15 +4,16 @@
 
 namespace control {
 
-class Arc : public AlgorithmBase {
+class Arc : public ControlBase {
  public:
   explicit Arc(const std::string& name,
                const DependencyInjector::Ptr& injector);
   ~Arc();
 
-  void enter() override;
-  void execute() override;
-  void exit() override;
+  virtual void init(std::shared_ptr<Args> args);
+  virtual void update();
+  virtual bool isFinish();
+  virtual bool isFail();
 };
 
 }  // namespace control

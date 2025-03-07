@@ -4,7 +4,7 @@
 
 namespace control {
 
-class Translation : public AlgorithmBase {
+class Translation : public ControlBase {
  public:
   struct Args {
     double distance;
@@ -15,19 +15,12 @@ class Translation : public AlgorithmBase {
                        const DependencyInjector::Ptr& injector);
   ~Translation();
 
-  void enter() override;
-  void execute() override;
-  void exit() override;
-
-  // void setGoal(std::shared_ptr<Args> goal);
+  virtual void init(std::shared_ptr<Args> args);
+  virtual void update();
+  virtual bool isFinish();
+  virtual bool isFail();
 
  private:
-  //任务目标
-  std::shared_ptr<Args> goal_;
-
-  //算法参数
-
-  //
 };
 
 }  // namespace control

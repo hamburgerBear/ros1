@@ -4,22 +4,16 @@ namespace control {
 
 Translation::Translation(const std::string& name,
                          const DependencyInjector::Ptr& injector)
-    : AlgorithmBase(name, injector) {}
+    : ControlBase(name, injector) {}
 
 Translation::~Translation() {}
 
-void Translation::enter(std::shared_ptr<Args> args) {}
+void Translation::init(std::shared_ptr<Args> args) {}
 
-void Translation::execute() {
-  // is finish
+void Translation::update() {}
 
-  // is fail
+bool Translation::isFinish() { return true; }
 
-  // running
-}
-
-void Translation::exit() {}
-
-// void Translation::setGoal(std::shared_ptr<Args> goal) {}
+bool Translation::isFail() { return true; }
 
 }  // namespace control

@@ -4,14 +4,16 @@ namespace control {
 
 Rotation::Rotation(const std::string& name,
                    const DependencyInjector::Ptr& injector)
-    : AlgorithmBase(name, injector) {}
+    : ControlBase(name, injector) {}
 
 Rotation::~Rotation() {}
 
-void Rotation::enter(std::shared_ptr<Args> args) {}
+void Rotation::init(std::shared_ptr<Args> args) {}
 
-void Rotation::execute() {}
+void Rotation::update() {}
 
-void Rotation::exit() {}
+bool Rotation::isFinish() { return true; }
+
+bool Rotation::isFail() { return true; }
 
 }  // namespace control

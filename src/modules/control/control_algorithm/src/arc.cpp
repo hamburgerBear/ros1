@@ -3,14 +3,16 @@
 namespace control {
 
 Arc::Arc(const std::string& name, const DependencyInjector::Ptr& injector)
-    : AlgorithmBase(name, injector) {}
+    : ControlBase(name, injector) {}
 
 Arc::~Arc() {}
 
-void Arc::enter(std::shared_ptr<Args> args) {}
+void Arc::init(std::shared_ptr<Args> args) {}
 
-void Arc::execute() {}
+void Arc::update() {}
 
-void Arc::exit() {}
+bool Arc::isFinish() { return true; }
+
+bool Arc::isFail() { return true; }
 
 }  // namespace control

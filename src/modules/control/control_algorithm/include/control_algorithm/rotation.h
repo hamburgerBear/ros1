@@ -4,15 +4,16 @@
 
 namespace control {
 
-class Rotation : public AlgorithmBase {
+class Rotation : public ControlBase {
  public:
   explicit Rotation(const std::string& name,
                     const DependencyInjector::Ptr& injector);
   ~Rotation();
 
-  void enter() override;
-  void execute() override;
-  void exit() override;
+  virtual void init(std::shared_ptr<Args> args);
+  virtual void update();
+  virtual bool isFinish();
+  virtual bool isFail();
 };
 
 }  // namespace control
