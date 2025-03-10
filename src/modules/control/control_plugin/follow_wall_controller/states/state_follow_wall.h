@@ -1,9 +1,20 @@
-#pragma once
-//考虑沿墙是作为一个控制器插件还是控制算法，控制算法可以被嵌入其他控制插件中作为一个状态。而控制插件不行。
-//如在导航过程中，被需要通过沿墙绕过障碍物，或是需要通过沿墙脱困，那么则需要调用沿墙插件。
+// #pragma once
 
-//而对于任务层，不同的沿墙运动/motion/插件，需要结合的任务是不一样的，有的需要标记地图。有的需要判断重复。
-//对于控制组件中，如果检测到了异常。如机器被困住或者被卡住。那么当前motion运动返回失败。
-namespace control {
+// #include "control_algorithm/translation.h"
+// #include "control_common/hsm.h"
 
-}
+// namespace control {
+
+// using namespace hsm;
+// class FollowWallController;
+
+// struct StateForward : StateWithOwner<FollowWallController> {
+//   virtual void OnEnter();
+//   virtual void Update();
+//   virtual void OnExit();
+//   virtual Transition GetTransition();
+
+//  private:
+// };
+
+// }  // namespace control

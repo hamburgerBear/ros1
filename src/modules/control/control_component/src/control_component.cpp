@@ -5,8 +5,13 @@ ControlComponent::ControlComponent() {
   dependency_injector_ = std::make_shared<DependencyInjector>();
 
   //注册插件，可以根据.yaml文件
-  plugin_map_["base_controller"] = std::make_shared<BaseController>();
-  plugin_map_["base_controller"]->init("base_controller", dependency_injector_);
+  // plugin_map_["base_controller"] = std::make_shared<BaseController>();
+  // plugin_map_["base_controller"]->init("base_controller",
+  // dependency_injector_);
+  plugin_map_["follow_wall_controller"] =
+      std::make_shared<FollowWallController>();
+  plugin_map_["follow_wall_controller"]->init("follow_wall_controller",
+                                              dependency_injector_);
 
   //启动控制任务action server
   control_task_ = std::make_unique<ControlTaskServer>(

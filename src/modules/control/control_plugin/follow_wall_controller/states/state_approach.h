@@ -1,22 +1,24 @@
-#pragma once
+// #pragma once
 
-#include "control_algorithm/arc.h"
+// #include "control_algorithm/arc.h"
+// #include "control_common/hsm.h"
 
-namespace control {
+// namespace control {
 
-using struct StateApproach : StateWithOwner<> {
-  virtual void OnEnter() {}
-  virtual void Update() {}
-  virtual void OnExit() {}
-  // virtual Transition GetTransition() { return SiblingTransition<Second>(); }
+// using namespace hsm;
+// class FollowWallController;
 
-}
+// struct StateApproach : StateWithOwner<FollowWallController> {
+//   virtual void OnEnter();
+//   virtual void Update();
+//   virtual void OnExit();
+//   virtual Transition GetTransition();
 
-class StateApproach : Arc {
-  StateApproach() = default;
-  ~StateApproach() = default;
+//  private:
+//   isFrontSideApproach();
+//   isSideApproach();
 
-  Transition transition() override;
-};
+//   std::unique_ptr<Arc> control_;
+// };
 
-}  // namespace control
+// }  // namespace control

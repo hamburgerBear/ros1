@@ -5,6 +5,7 @@
 #include "control_common/hsm.h"
 
 namespace control {
+
 class FollowWallController : public PluginBase {
  public:
   FollowWallController() = default;
@@ -15,6 +16,7 @@ class FollowWallController : public PluginBase {
   void run() override;
 
  private:
-  hsm::StateMachine stateMachine;
+  std::shared_ptr<hsm::StateMachine> state_machine_;
 };
+
 }  // namespace control

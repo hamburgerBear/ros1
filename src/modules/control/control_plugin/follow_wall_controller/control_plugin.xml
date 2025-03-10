@@ -1,0 +1,7 @@
+<library path="lib/libfollow_wall_controller">
+  <class name="control/follow_wall_controller" type="control::FollowWallController" base_class_type="control::PluginBase">
+    <description>
+      A control plugin
+    </description>
+  </class>
+</library>

@@ -1,14 +1,34 @@
-#include "follow_wall_controller/states/state_approach.h"
+// #include "follow_wall_controller/states/state_approach.h"
 
-namespace control {
+// namespace control {
 
-// 有一些基础函数应放在utils，考虑是放在follow_wall_control的utils里还是再control_common里
-Transition StateApproach::transition() {
-  if (isFinish())
-    return std::make_pair("state_forward", nullptr);
-  else if (/*靠近墙，切换followwall*/)
-    return std::make_pair("state_follow_wall", nullptr);
-  else
-    return std::make_pair("state_approach", nullptr);
+// /*
+//   1. 从Ownner中获取传感器资源，以及一些针对该控制器的(Root)通用算法
+//   2. 从OnExit传入任务目标(Action goal)
+// */
+// void StateApproach::OnEnter() {
+//   control_ = std::make_unique<Arc>("arc", Owner()->injector_);
+//   control_->setGoal(Owner()->arc_args_);
+// }
 
-}  // namespace control
+// void StateApproach::Update() { control_->update(); }
+
+// void StateApproach::OnExit() {}
+
+// //超时
+// Transition StateApproach::GetTransition() {
+//   if (control_->isFinish() || control_->isFail())
+//     return SiblingTransition<StateForward>();
+//   else if (isFrontSideApproach())
+//     return SiblingTransition<StateFollowWall>();
+//   else if (isSideApproach())
+//     return SiblingTransition<StateForward>();
+//   else
+//     return NoTransition();
+// }
+
+// bool StateApproach::isFrontSideApproach() { return false; }
+
+// bool StateApproach::isSideApproach() { return false; }
+
+// }  // namespace control

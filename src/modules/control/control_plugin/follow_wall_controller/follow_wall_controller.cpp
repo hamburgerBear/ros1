@@ -1,4 +1,10 @@
-#include "follow_wall_controller/follow_wall_controller.h"
+#include "follow_wall_controller.h"
+
+#include <pluginlib/class_list_macros.h>
+
+#include "states/state_root.h"
+
+PLUGINLIB_EXPORT_CLASS(control::FollowWallController, control::PluginBase)
 
 namespace control {
 
@@ -6,21 +12,15 @@ bool FollowWallController::init(const std::string& name,
                                 const DependencyInjector::Ptr& injector) {
   name_ = name;
   injector_ = injector;
-  // control_map_["translation"] =
-  //     std::make_shared<Translation>("translation", injector);
-  // control_map_["rotation"] = std::make_shared<Rotation>("rotation",
-  // injector); control_map_["arc"] = std::make_shared<Arc>("arc", injector);
+  state_machine_ = std::make_shared<hsm::StateMachine>();
+  state_machine_->Initialize<StateRoot>(this);
   return true;
 }
 
 void FollowWallController::run() {
-  // if (control_map_.find(injector_->algorithm_name_) == control_map_.end()) {
-  //   ROS_WARN("Whitout this control algorithm[%s].",
-  //            injector_->algorithm_name_.c_str());
-  // } else {
-  //   ROS_INFO("Algorithm running.");
-  //   auto control = control_map_[injector_->algorithm_name_];
-  //   control->Run();
-  // }
+  state_machine_->ProcessStateTransitions();
+  state_machine_->UpdateStates();
+  sleep(1);  // TODO:check this
 }
+
 }  // namespace control
