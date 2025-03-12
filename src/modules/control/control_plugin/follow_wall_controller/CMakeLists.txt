@@ -123,6 +123,7 @@ include_directories(
 )
 
 ## Declare a C++ library
+# TODO:THIS,添加新的cpp不会重新编译
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 add_library(${PROJECT_NAME} ${SOURCES})
 

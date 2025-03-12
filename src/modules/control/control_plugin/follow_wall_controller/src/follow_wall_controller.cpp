@@ -1,9 +1,6 @@
 #include "follow_wall_controller/follow_wall_controller.h"
 
 #include <pluginlib/class_list_macros.h>
-#include <visualization_msgs/Marker.h>
-
-#include "follow_wall_controller/state_root.h"
 
 PLUGINLIB_EXPORT_CLASS(control::FollowWallController, control::PluginBase)
 
@@ -23,9 +20,8 @@ bool FollowWallController::init(const std::string& name,
   //单独增加一个setGoal的函数在插件中
   //创建发布器
   ros::NodeHandle nh;
-  pub_pointcloud_ = nh.advertise<visualization_msgs::Marker>("/pointcloud", 1);
-  pub_discrete_pointcloud_ =
-      nh.advertise<visualization_msgs::Marker>("/discrete_pointcloud", 1);
+  params_ = boost::make_shared<Params>(nh);
+  visualization_ = boost::make_shared<Visualization>(nh);
 
   base_to_laser_ = Eigen::Isometry3d::Identity();
   return true;
@@ -37,8 +33,8 @@ PluginStage FollowWallController::run() {
   std::cout << "沿墙运行中" << std::endl;
   bool ok = toBaselink(injector_->scan_, base_to_laser_, pointcloud_);
   discretePointcloud(pointcloud_, discrete_pointcloud_);
-  publishPointCloud();
-  publishPointDiscretePointCloud();
+  visualization_->publishPointCloud(pointcloud_);
+  visualization_->publishPointDiscretePointCloud(discrete_pointcloud_);
 
   static int i = 0;
   PluginStage stage;
@@ -69,54 +65,12 @@ double FollowWallController::getLateralDistanceFromScan(const double& angle1,
   return lateral_distance;
 }
 
-void FollowWallController::publishPointCloud() {
-  visualization_msgs::Marker point_marker;
-  point_marker.header.frame_id = "base_link";
-  point_marker.header.stamp = ros::Time::now();
-  point_marker.ns = "scan";
-  point_marker.id = 0;
-  point_marker.type = visualization_msgs::Marker::SPHERE_LIST;
-  point_marker.action = visualization_msgs::Marker::ADD;
-  point_marker.scale.x = 0.05;  // TODO:AUTOWARE.AI使用SCALE和COLOR
-  point_marker.scale.y = 0.05;
-  point_marker.scale.z = 0.05;
-  point_marker.color.r = 1.0f;
-  point_marker.color.g = 0.0f;
-  point_marker.color.b = 0.0f;
-  point_marker.color.a = 1.0f;
-  geometry_msgs::Point p;
-  for (const auto& point : pointcloud_) {
-    p.x = point.x();
-    p.y = point.y();
-    point_marker.points.push_back(p);
-  }
-
-  pub_pointcloud_.publish(point_marker);
+boost::shared_ptr<Params> FollowWallController::params() const {
+  return params_;
 }
 
-void FollowWallController::publishPointDiscretePointCloud() {
-  visualization_msgs::Marker point_marker;
-  point_marker.header.frame_id = "base_link";
-  point_marker.header.stamp = ros::Time::now();
-  point_marker.ns = "scan";
-  point_marker.id = 0;
-  point_marker.type = visualization_msgs::Marker::SPHERE_LIST;
-  point_marker.action = visualization_msgs::Marker::ADD;
-  point_marker.scale.x = 0.05;  // TODO:AUTOWARE.AI使用SCALE和COLOR
-  point_marker.scale.y = 0.05;
-  point_marker.scale.z = 0.05;
-  point_marker.color.r = 0.0f;
-  point_marker.color.g = 1.0f;
-  point_marker.color.b = 0.0f;
-  point_marker.color.a = 1.0f;
-  geometry_msgs::Point p;
-  for (const auto& point : discrete_pointcloud_) {
-    p.x = point.second.x();
-    p.y = point.second.y();
-    point_marker.points.push_back(p);
-  }
-
-  pub_discrete_pointcloud_.publish(point_marker);
+boost::shared_ptr<Visualization> FollowWallController::visual() const {
+  return visualization_;
 }
 
 }  // namespace control

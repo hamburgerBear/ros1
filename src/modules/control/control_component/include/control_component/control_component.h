@@ -2,7 +2,8 @@
 
 #include <actionlib/server/simple_action_server.h>  //ActionServer
 #include <control_interface/ControlTaskAction.h>    //ActionMsg
-#include <ros/ros.h>                                //ROS
+// #include <geometry_msgs/Twist.h>
+#include <ros/ros.h>  //ROS
 
 #include <pluginlib/class_loader.hpp>  //Plugin
 
@@ -35,13 +36,16 @@ class ControlComponent {
   void staticTfCB(const tf2_msgs::TFMessage::ConstPtr& msg);
 
  private:
+  std::shared_ptr<DependencyInjector> injector() const;
+
+ private:
   std::shared_ptr<DependencyInjector> dependency_injector_;
   ros::NodeHandle nh_;
 
   std::unique_ptr<ControlTaskServer> control_task_;
   PluginMap plugin_map_;
 
-  // ROS数据订阅
+  // ROS数据订阅&发布
   ros::Subscriber sub_scan_;
   ros::Subscriber sub_stage_scan_;
   ros::Subscriber sub_pose_;
@@ -49,6 +53,7 @@ class ControlComponent {
   ros::Subscriber sub_odom_;
   ros::Subscriber sub_stage_bumper_;
   ros::Subscriber sub_static_tf_;
+  ros::Publisher pub_cmd_vel_;
 };
 
 }  // namespace control

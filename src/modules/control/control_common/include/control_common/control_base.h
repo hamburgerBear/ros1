@@ -56,6 +56,7 @@ class PluginBase {
   virtual PluginStage run() = 0;
   // virtual void reset() = 0;
   std::string Name() { return name_; }
+  DependencyInjector::Ptr injector() { return injector_; }
 
   std::string name_;
   DependencyInjector::Ptr injector_;

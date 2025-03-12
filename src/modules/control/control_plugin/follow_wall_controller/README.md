@@ -17,3 +17,9 @@ Forward状态，为辅助状态。用于协助ApproachWall、Collision状态，�
  - 读写数据，读写数据的功能被封装在状态机的状态种，控制算法无法访问到。
 通过状态机Root节点管理，如拟合数据、虚拟障碍物或禁区
 
+3. 文件结构
+follow_wall_controller:控制器插件
+参考TEB_local_planner，将可视化和参数与控制器插件解耦
+follow_wall_cfg.cpp、follow_wall_visual.cpp
+参考状态机封装，将沿墙控制器插件分解成诺干个子状态动作的组合
+常规动作、事件响应动作(参考简介)

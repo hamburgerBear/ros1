@@ -1,6 +1,7 @@
 #pragma once
 
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
@@ -35,6 +36,7 @@ class DependencyInjector {
   std::deque<nav_msgs::OdometryPtr> odom_deque_;
   std_msgs::ByteMultiArrayPtr bumper_;
   tf2_msgs::TFMessage::ConstPtr static_tf_;
+  geometry_msgs::Twist cmd_vel_;
 };
 
 }  // namespace control

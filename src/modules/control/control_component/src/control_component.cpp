@@ -31,6 +31,7 @@ ControlComponent::ControlComponent() {
       nh_.subscribe("/bump_0", 1, &ControlComponent::stageBumperCB, this);
   sub_static_tf_ =
       nh_.subscribe("/tf_static", 1, &ControlComponent::staticTfCB, this);
+  pub_cmd_vel_ = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 }
 
 ControlComponent::~ControlComponent() {}
@@ -58,6 +59,7 @@ void ControlComponent::controlTask(
   PluginStage stage;
   while (stage.working() && nh_.ok()) {
     stage = controller->run();
+    pub_cmd_vel_.publish(injector()->cmd_vel_);
   }
 
   if (stage.succeeded()) {
@@ -111,6 +113,10 @@ void ControlComponent::stageBumperCB(const std_msgs::ByteMultiArrayPtr& msg) {
 void ControlComponent::staticTfCB(const tf2_msgs::TFMessage::ConstPtr& msg) {
   ROS_INFO("Receive static tf data.");
   dependency_injector_->static_tf_ = msg;
+}
+
+std::shared_ptr<DependencyInjector> ControlComponent::injector() const {
+  return dependency_injector_;
 }
 
 }  // namespace control
