@@ -21,7 +21,7 @@ bool BaseController::init(const std::string& name,
   return true;
 }
 
-void BaseController::run() {
+PluginStage BaseController::run() {
   // if (control_map_.find(injector_->algorithm_name_) == control_map_.end()) {
   //   ROS_WARN("Whitout this control algorithm[%s].",
   //            injector_->algorithm_name_.c_str());

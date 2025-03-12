@@ -15,7 +15,7 @@ class BaseController : public PluginBase {
 
   bool init(const std::string& name,
             const DependencyInjector::Ptr& injector) override;
-  void run() override;
+  PluginStage run() override;
 
  private:
   StateMachine::Ptr state_machine_;

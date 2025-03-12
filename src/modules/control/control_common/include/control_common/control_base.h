@@ -34,6 +34,17 @@ class ControlBase {
   Args goal_;
 };
 
+struct PluginStage {
+  enum class Stage { RUNNING, PAUSED, SUCCEEDED, ABORTED };
+  PluginStage() : stage(Stage::RUNNING) {}
+  bool working() { return (stage <= Stage::PAUSED); }
+  bool running() { return (stage == Stage::RUNNING); }
+  bool paused() { return (stage == Stage::PAUSED); }
+  bool succeeded() { return (stage == Stage::SUCCEEDED); }
+  bool aborted() { return (stage == Stage::ABORTED); }
+  Stage stage;
+};
+
 class PluginBase {
  public:
   using Ptr = std::shared_ptr<PluginBase>;
@@ -42,7 +53,7 @@ class PluginBase {
 
   virtual bool init(const std::string& name,
                     const DependencyInjector::Ptr& injector) = 0;
-  virtual void run() = 0;
+  virtual PluginStage run() = 0;
   // virtual void reset() = 0;
   std::string Name() { return name_; }
 
