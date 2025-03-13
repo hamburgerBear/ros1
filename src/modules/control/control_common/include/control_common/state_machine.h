@@ -23,7 +23,7 @@ class StateMachine {
   bool initState(const std::string& init_state,
                  std::shared_ptr<ControlBase::Args> args) {
     curr_state_ = init_state;
-    state_list_[curr_state_]->init(args);
+    // state_list_[curr_state_]->init(args);
     //初始化失败，异常的初始化状态，在状态列表中。
   }
 
@@ -36,7 +36,7 @@ class StateMachine {
     if (curr_state_ != transition.first) {
       curr_state_ = transition.first;
       state_obj_ptr = state_list_[curr_state_];
-      state_obj_ptr->init(transition.second);
+      // state_obj_ptr->init(transition.second);
       state_obj_ptr->update(/*Injector()->cmd_vel*/);
     }
   }

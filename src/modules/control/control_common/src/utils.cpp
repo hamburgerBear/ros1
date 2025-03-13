@@ -26,6 +26,29 @@ double toRad(double deg) { return angles::from_degrees(deg); }
 
 double toDeg(double rad) { return angles::to_degrees(rad); }
 
+double shortestAngularDistance(double from, double to) {
+  return angles::shortest_angular_distance(from, to);
+}
+
+double normalizeAngle(double angle) { return angles::normalize_angle(angle); }
+
+Eigen::Vector3d toEigen(const nav_msgs::Odometry& odom) {
+  Eigen::Vector3d pose;
+  pose.x() = odom.pose.pose.position.x;
+  pose.y() = odom.pose.pose.position.x;
+  pose.z() = tf2::getYaw(odom.pose.pose.orientation);
+  return std::move(pose);
+}
+
+Eigen::Vector3d toEigen(
+    const geometry_msgs::PoseWithCovarianceStamped& current_pose) {
+  Eigen::Vector3d pose;
+  pose.x() = current_pose.pose.pose.position.x;
+  pose.y() = current_pose.pose.pose.position.x;
+  pose.z() = tf2::getYaw(current_pose.pose.pose.orientation);
+  return std::move(pose);
+}
+
 void getOdomTFAndTwist(const ros::Time& time,
                        const std::deque<nav_msgs::OdometryPtr>& odom_deque,
                        Eigen::Isometry3d& odom_to_baselink,
@@ -136,8 +159,10 @@ bool toBaselink(const sensor_msgs::LaserScanPtr& sensor,
 
   for (const auto& point : filtered_points) {
     point_at_sensor << point(0), point(1), 0.0;
+    point_at_base = point_at_sensor;  //假设坐标系一致且不需要时间同步
     // point_at_base = baselink_to_sensor * point_at_sensor;
-    point_at_base = T_combined * point_at_sensor;
+    // //将sensor系的点转换到baselink系下 point_at_base = T_combined *
+    // point_at_sensor; //将to时刻sensor系的点，转换到t1时刻baselink系下
     points_at_base.emplace_back(point_at_base);
   }
 
@@ -148,7 +173,8 @@ bool toBaselink(const sensor_msgs::LaserScanPtr& sensor,
   else
     ROS_INFO_THROTTLE(30.0, "Sensor(%s) to baselink cost %fms",
                       sensor->header.frame_id.c_str(), dt);
-
+  usleep(1000 * 30);
+  std::cout << "t2 = " << (ros::Time::now()).toSec() * 1000 << std::endl;
   return true;
 }
 

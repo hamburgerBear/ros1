@@ -98,10 +98,10 @@ void StateFollowWall::Update() {
 void StateFollowWall::OnExit() { ROS_INFO("StateFollowWall::OnExit"); }
 
 Transition StateFollowWall::GetTransition() {
-  // if (Owner->loseObject())
-  //   return SiblingTransition<StateArc>();
-  // else
-  return NoTransition();
+  if (Owner().loseFollowObject(50.0, 85.0))
+    return SiblingTransition<StateApproachWall>();
+  else
+    return NoTransition();
 }
 
 }  // namespace control

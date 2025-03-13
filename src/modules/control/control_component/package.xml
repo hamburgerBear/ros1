@@ -58,7 +58,8 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
-  <!-- <depend>control_common</depend> -->
+  <depend>control_common</depend>
+  <depend>control_algorithm</depend>
   <depend>control_interface</depend>
   <depend>base_controller</depend>
   <depend>follow_wall_controller</depend>

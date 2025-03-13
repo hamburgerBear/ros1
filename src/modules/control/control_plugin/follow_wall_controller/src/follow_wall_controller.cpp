@@ -51,8 +51,10 @@ PluginStage FollowWallController::run() {
   return stage;
 }
 
-double FollowWallController::getLateralDistanceFromScan(const double& angle1,
-                                                        const double& angle2) {
+double FollowWallController::getFollowDir() const { return -1.0; }
+
+double FollowWallController::getLateralDistanceFromScan(
+    const double& angle1, const double& angle2) const {
   double lateral_distance = INVALID_VALUE;
   double min = std::min(angle1, angle2);
   double max = std::max(angle1, angle2);
@@ -64,6 +66,21 @@ double FollowWallController::getLateralDistanceFromScan(const double& angle1,
   }
 
   return lateral_distance;
+}
+
+bool FollowWallController::loseFollowObject(const double& angle1,
+                                            const double& angle2) const {
+  double dir = getFollowDir();
+  // double lateral_distance =
+  //     GetLateralDistanceFromScanAndLaserRight(50.0 * dir, 85.0 * dir);
+  double lateral_distance =
+      getLateralDistanceFromScan(angle1 * dir, angle2 * dir);
+  if (lateral_distance >=
+      (params()->RobotRadius() + params()->FollowWallDistance() +
+       params()->FollowWallTolerance()))
+    return true;
+  else
+    return false;
 }
 
 boost::shared_ptr<Params> FollowWallController::params() const {

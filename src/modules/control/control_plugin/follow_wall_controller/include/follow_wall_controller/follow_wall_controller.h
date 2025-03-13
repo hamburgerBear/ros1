@@ -1,5 +1,8 @@
 #pragma once
 
+#include "control_algorithm/arc.h"
+#include "control_algorithm/rotation.h"
+#include "control_algorithm/translation.h"
 #include "control_common/control_base.h"
 #include "control_common/hsm.h"
 #include "control_common/utils.h"
@@ -19,7 +22,11 @@ class FollowWallController : public PluginBase {
   PluginStage run() override;
 
  public:
-  double getLateralDistanceFromScan(const double& angle1, const double& angle2);
+  double getFollowDir() const;
+  double getLateralDistanceFromScan(const double& angle1,
+                                    const double& angle2) const;
+  bool loseFollowObject(const double& angle1, const double& angle2) const;
+
   boost::shared_ptr<Params> params() const;
   boost::shared_ptr<Visualization> visual() const;
 
@@ -59,10 +66,10 @@ struct StateApproachWall : StateWithOwner<FollowWallController> {
   virtual Transition GetTransition();
 
  private:
-  // isFrontSideApproach();
-  // isSideApproach();
+  bool isFrontSideApproach() const;
+  bool isSideApproach() const;
 
-  // std::unique_ptr<Arc> control_;
+  std::unique_ptr<Arc> control_;
 };
 
 struct StateCollision : StateWithOwner<FollowWallController> {
@@ -78,13 +85,13 @@ struct StateCollision : StateWithOwner<FollowWallController> {
 };
 
 struct StateForward : StateWithOwner<FollowWallController> {
-  virtual void OnEnter();
+  virtual void OnEnter(const double& forward_distance = -1.0);
   virtual void Update();
   virtual void OnExit();
   virtual Transition GetTransition();
 
  private:
-  // std::unique_ptr<Translation> control_;
+  std::unique_ptr<Translation> control_;
 };
 
 struct StateFollowBoundary : StateWithOwner<FollowWallController> {

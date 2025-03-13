@@ -33,15 +33,15 @@ Params::Params(ros::NodeHandle& nh) : nh_(nh) {
   // follow wall
   follow.follow_wall_distance = 0.03f;
   follow.follow_wall_tolerance = 0.05f;
-  follow.follow_wall_kp1 = 20.0f;
-  follow.follow_wall_kp2 = 20.0f;
-  follow.follow_wall_kp3 = 20.0f;
-  follow.follow_wall_kp4 = 20.0f;
+  follow.follow_wall_kp1 = 10.0f;
+  follow.follow_wall_kp2 = 10.0f;
+  follow.follow_wall_kp3 = 10.0f;
+  follow.follow_wall_kp4 = 10.0f;
   follow.follow_wall_scale1 = 1.0f;
   follow.follow_wall_scale2 = 1.0f;
   follow.follow_wall_scale3 = 1.0f;
   follow.follow_wall_scale4 = 1.0f;
-  follow.linear_vel_max = 0.2f;
+  follow.linear_vel_max = 0.1f;
   follow.linear_vel_min = 0.1f;
   follow.angular_vel_max = 1.0f;
   follow.linear_acc = 10.0f;

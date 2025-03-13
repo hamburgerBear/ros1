@@ -16,6 +16,9 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   base_controller
   follow_wall_controller
+  #TODO:CHECK THIS,编译依赖没有主动找到如下的库
+  control_common
+  control_algorithm
 )
 
 ## System dependencies are found with CMake's conventions
