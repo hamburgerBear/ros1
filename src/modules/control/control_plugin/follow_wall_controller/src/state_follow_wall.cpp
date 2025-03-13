@@ -2,7 +2,7 @@
 
 namespace control {
 
-void StateFollowWall::OnEnter() {}
+void StateFollowWall::OnEnter() { ROS_INFO("StateFollowWall::OnEnter"); }
 
 void StateFollowWall::Update() {
   double dir = -1.0;  // Data()->GetFollowDir();
@@ -82,15 +82,20 @@ void StateFollowWall::Update() {
     return;
   }
 
-  Owner().injector()->cmd_vel_.angular.z = 0.0;
-  // (desired_distance - lateral_distance) * kp * -dir;
+  std::cout << "desired_distance = " << desired_distance << std::endl;
+  std::cout << "lateral_distance = " << lateral_distance << std::endl;
+  std::cout << "kp = " << kp << std::endl;
+  // Owner().injector()->cmd_vel_.angular.z = 0.0;
+  // Owner().injector()->cmd_vel_.linear.x = 0.0;
+  Owner().injector()->cmd_vel_.angular.z =
+      (desired_distance - lateral_distance) * kp * -dir;
   Owner().injector()->cmd_vel_.linear.x =
-      0.0;  // Owner().params()->FollowWallLinearVelMax();
+      Owner().params()->FollowWallLinearVelMax();
   ROS_INFO("cmd_vel = {%f, %f}", Owner().injector()->cmd_vel_.linear.x,
            Owner().injector()->cmd_vel_.angular.z);
 }
 
-void StateFollowWall::OnExit() {}
+void StateFollowWall::OnExit() { ROS_INFO("StateFollowWall::OnExit"); }
 
 Transition StateFollowWall::GetTransition() {
   // if (Owner->loseObject())

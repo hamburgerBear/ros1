@@ -37,6 +37,9 @@ class FollowWallController : public PluginBase {
 };
 
 struct StateRoot : StateWithOwner<FollowWallController> {
+  virtual void OnEnter();
+  virtual void Update();
+  virtual void OnExit();
   virtual Transition GetTransition();
 };
 

@@ -31,7 +31,8 @@ PluginStage FollowWallController::run() {
   ROS_INFO("RUNNING....");
 
   std::cout << "沿墙运行中" << std::endl;
-  bool ok = toBaselink(injector_->scan_, base_to_laser_, pointcloud_);
+  bool ok = toBaselink(injector_->scan_, base_to_laser_, injector_->odom_deque_,
+                       pointcloud_);
   discretePointcloud(pointcloud_, discrete_pointcloud_);
   visualization_->publishPointCloud(pointcloud_);
   visualization_->publishPointDiscretePointCloud(discrete_pointcloud_);
@@ -46,7 +47,7 @@ PluginStage FollowWallController::run() {
   }
   state_machine_->ProcessStateTransitions();
   state_machine_->UpdateStates();
-  sleep(1);  // TODO:check this
+  usleep(1000 * 50);  // TODO:check this
   return stage;
 }
 

@@ -26,8 +26,58 @@ double toRad(double deg) { return angles::from_degrees(deg); }
 
 double toDeg(double rad) { return angles::to_degrees(rad); }
 
+void getOdomTFAndTwist(const ros::Time& time,
+                       const std::deque<nav_msgs::OdometryPtr>& odom_deque,
+                       Eigen::Isometry3d& odom_to_baselink,
+                       geometry_msgs::Twist& twist) {
+  auto odom_temp = odom_deque.front();
+  for (auto it = odom_deque.rbegin(); it != odom_deque.rend(); ++it) {
+    const nav_msgs::OdometryPtr& odom = *it;
+    if (time > odom->header.stamp) {
+      odom_temp = *it;
+      double dt = (time - odom_temp->header.stamp).toSec();
+      double dangle = odom_temp->twist.twist.angular.z * dt;
+      tf2::Quaternion q(odom_temp->pose.pose.orientation.x,
+                        odom_temp->pose.pose.orientation.y,
+                        odom_temp->pose.pose.orientation.z,
+                        odom_temp->pose.pose.orientation.w);
+      geometry_msgs::Quaternion quat_msg;
+      quat_msg.x = q.x();
+      quat_msg.y = q.y();
+      quat_msg.z = q.z();
+      quat_msg.w = q.w();
+      odom_temp->pose.pose.orientation = quat_msg;
+      break;
+    }
+  }
+
+  twist = odom_temp->twist.twist;
+  // 从里程计消息中提取位置和方向
+  const geometry_msgs::Pose& pose = odom_temp->pose.pose;
+  const geometry_msgs::Point& position = pose.position;
+  const geometry_msgs::Quaternion& orientation = pose.orientation;
+
+  // 将四元数转换为 Eigen 旋转矩阵
+  Eigen::Quaterniond quat(orientation.w, orientation.x, orientation.y,
+                          orientation.z);
+  Eigen::Matrix3d rotation_matrix = quat.toRotationMatrix();
+
+  // 创建一个 Eigen::Isometry3d 变换
+  odom_to_baselink = Eigen::Isometry3d::Identity();
+  odom_to_baselink.linear() = rotation_matrix;
+  odom_to_baselink.translation() =
+      Eigen::Vector3d(position.x, position.y, position.z);
+
+  if (fabs((time - odom_temp->header.stamp).toSec()) > 0.5) {
+    // std::cout << "里程计超时了 = "
+    //           << fabs((time - odom_temp.header.stamp).toSec()) <<
+    //           std::endl;
+  }
+}
+
 bool toBaselink(const sensor_msgs::LaserScanPtr& sensor,
                 const Eigen::Isometry3d& baselink_to_sensor,
+                const std::deque<nav_msgs::OdometryPtr>& odom_deque,
                 PointCloud& points_at_base) {
   if (sensor == nullptr) {
     ROS_WARN_THROTTLE(1.0, "Sensor data is nullptr, please check sensor.");
@@ -71,10 +121,23 @@ bool toBaselink(const sensor_msgs::LaserScanPtr& sensor,
   auto filtered_points = points;
   //多传感器时间同步
   //坐标系转换(假设水平面安装的高效坐标系转换)
+
+  PointCloud empty;
+  std::swap(empty, points_at_base);
   Eigen::Vector3d point_at_sensor, point_at_base;
+
+  Eigen::Isometry3d odom_to_baselink_t0, odom_to_baselink_t1;
+  geometry_msgs::Twist twist;
+  getOdomTFAndTwist(sensor->header.stamp, odom_deque, odom_to_baselink_t0,
+                    twist);
+  getOdomTFAndTwist(ros::Time::now(), odom_deque, odom_to_baselink_t1, twist);
+  Eigen::Isometry3d T_combined =
+      odom_to_baselink_t1.inverse() * odom_to_baselink_t0 * baselink_to_sensor;
+
   for (const auto& point : filtered_points) {
     point_at_sensor << point(0), point(1), 0.0;
-    point_at_base = baselink_to_sensor * point_at_sensor;
+    // point_at_base = baselink_to_sensor * point_at_sensor;
+    point_at_base = T_combined * point_at_sensor;
     points_at_base.emplace_back(point_at_base);
   }
 

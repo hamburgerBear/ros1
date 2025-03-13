@@ -76,29 +76,29 @@ void ControlComponent::controlTask(
 }
 
 void ControlComponent::scanCB(const sensor_msgs::LaserScanPtr& msg) {
-  ROS_INFO("Receive scan data.");
+  // ROS_INFO("Receive scan data.");
   dependency_injector_->scan_ = msg;
 }
 
 void ControlComponent::stageScanCB(const sensor_msgs::LaserScanPtr& msg) {
-  ROS_INFO("Receive stage scan data.");
+  // ROS_INFO("Receive stage scan data.");
   dependency_injector_->scan_ = msg;
 }
 
 void ControlComponent::poseCB(
     const geometry_msgs::PoseWithCovarianceStampedPtr& msg) {
-  ROS_INFO("Receive pose data.");
+  // ROS_INFO("Receive pose data.");
   dependency_injector_->current_pose_ = msg;
 }
 
 void ControlComponent::stagePoseCB(const nav_msgs::OdometryPtr& msg) {
-  ROS_INFO("Receive stage pose data");
+  // ROS_INFO("Receive stage pose data");
   dependency_injector_->current_pose_->header = msg->header;
   dependency_injector_->current_pose_->pose = msg->pose;
 }
 
 void ControlComponent::odomCB(const nav_msgs::OdometryPtr& msg) {
-  ROS_INFO("Receive odom data.");
+  // ROS_INFO("Receive odom data.");
   dependency_injector_->odom_ = msg;
   dependency_injector_->odom_deque_.push_back(msg);
   if (dependency_injector_->odom_deque_.size() >= 10)
@@ -106,12 +106,12 @@ void ControlComponent::odomCB(const nav_msgs::OdometryPtr& msg) {
 }
 
 void ControlComponent::stageBumperCB(const std_msgs::ByteMultiArrayPtr& msg) {
-  ROS_INFO("Receive stage bumper data.");
+  // ROS_INFO("Receive stage bumper data.");
   dependency_injector_->bumper_ = msg;
 }
 
 void ControlComponent::staticTfCB(const tf2_msgs::TFMessage::ConstPtr& msg) {
-  ROS_INFO("Receive static tf data.");
+  // ROS_INFO("Receive static tf data.");
   dependency_injector_->static_tf_ = msg;
 }
 

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "follow_wall_controller/follow_wall_visual.h"
 
 namespace control {
