@@ -7,9 +7,9 @@ namespace control {
   2. 从OnExit传入任务目标(Action goal)
 */
 void StateApproachWall::OnEnter() {
-  std::shared_ptr<Arc::ArcArgs> args = std::make_shared<Arc::ArcArgs>();
+  // std::shared_ptr<Arc::ArcArgs> args = std::make_shared<Arc::ArcArgs>();
   control_ = std::make_unique<Arc>("arc", Owner().injector_);
-  control_->setGoal(args);
+  // control_->setGoal(args);
 }
 
 void StateApproachWall::Update() { control_->update(); }

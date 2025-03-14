@@ -7,8 +7,11 @@ namespace control {
 class Translation : public ControlBase {
  public:
   struct TranslationArgs : Args {
-    double translation_distance;  //移动距离
-    bool fixed_head;              //固定航向
+    TranslationArgs(const std::vector<Eigen::Vector3d>& path,
+                    const double& speed)
+        : Args(path, speed) {}
+
+    bool fixed_head;
   };
 
   explicit Translation(const std::string& name,
@@ -17,11 +20,6 @@ class Translation : public ControlBase {
 
   virtual void setGoal(std::shared_ptr<Args> args);
   virtual void update();
-  virtual bool isFinish();
-  virtual bool isFail();
-
- private:
-  std::shared_ptr<TranslationArgs> args_;
 };
 
 }  // namespace control

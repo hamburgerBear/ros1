@@ -7,7 +7,8 @@ namespace control {
 class Rotation : public ControlBase {
  public:
   struct RotationArgs : Args {
-    double rotation_distance;  //旋转弧度
+    RotationArgs(const std::vector<Eigen::Vector3d>& path, const double& speed)
+        : Args(path, speed) {}
   };
 
   explicit Rotation(const std::string& name,
@@ -16,11 +17,6 @@ class Rotation : public ControlBase {
 
   virtual void setGoal(std::shared_ptr<Args> args);
   virtual void update();
-  virtual bool isFinish();
-  virtual bool isFail();
-
- private:
-  std::shared_ptr<RotationArgs> args_;
 };
 
 }  // namespace control

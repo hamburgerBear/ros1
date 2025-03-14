@@ -8,34 +8,32 @@ Arc::Arc(const std::string& name, const DependencyInjector::Ptr& injector)
 Arc::~Arc() {}
 
 void Arc::setGoal(std::shared_ptr<Args> args) {
-  args_ = std::dynamic_pointer_cast<ArcArgs>(args);
-  accumulated_distance_ = 0.0;
+  args_ = args;
   start_pose_ = toEigen(*injector()->odom_);
   last_pose_ = start_pose_;
   start_time_ = ros::Time::now();
-  args_->timeout_threshold =
-      (desiredDistance() / args_->min_angular_velocity) * 1.5;
+  accumulated_distance_ = 0.0;
+  timeout_threshold_ = (targetDistance() / minVelTheta()) * 1.5;
 
   ROS_INFO(
       "Control(%s) start_pose(%f, %f, %f) desired_distance(%f) "
       "timeout_threshold(%f)",
-      name().c_str(), start_pose_.x(), start_pose_.y(), toDeg(start_pose_.z()),
-      toDeg(desired_distance_), args_->timeout_threshold);
+      name().c_str(), startPose().x(), startPose().y(), toDeg(startPose().z()),
+      toDeg(targetDistance()), timeoutThreshold());
 }
 
 void Arc::update() {
-  double v = args_->max_linear_velocity;
-  double w =
-      args_->max_linear_velocity / (rotationRadius() * sign(desired_distance_));
+  double v = targetSpeed();
+  double w = targetSpeed() / (rotationRadius() * sign(targetDistance()));
   injector()->cmd_vel_.linear.x = v;
   injector()->cmd_vel_.angular.z = w;
 
   Eigen::Vector3d current_pose = toEigen(*injector()->odom_);
   double distance =
-      fabs(shortestAngularDistance(last_pose_.z(), current_pose.z()));
-  if (distance > args_->max_angular_velocity) {
-    ROS_WARN("Control(%s) jump distance(%f) from(%f) to(%f)", toDeg(distance),
-             toDeg(last_pose_.z()), toDeg(current_pose.z()));
+      fabs(shortestAngularDistance(lastPose().z(), current_pose.z()));
+  if (distance > maxVelTheta()) {
+    ROS_WARN("Control(%s) jump distance(%f) from(%f) to(%f)", name().c_str(),
+             toDeg(distance), toDeg(lastPose().z()), toDeg(current_pose.z()));
     distance = 0.0;
   }
 
@@ -52,27 +50,8 @@ void Arc::update() {
   }
 }
 
-bool Arc::isFinish() {
-  if (accumulated_distance_ >= fabs(desired_distance_)) {
-    ROS_INFO(
-        "Control(%s) finish, desired_distance(%f) accumulation_distance(%f)",
-        name().c_str(), toDeg(desired_distance_), toDeg(accumulated_distance_));
-    return true;
-  } else
-    return false;
+double Arc::rotationRadius() const {
+  return std::dynamic_pointer_cast<ArcArgs>(args_)->rotation_radius;
 }
-
-bool Arc::isFail() {
-  double dt = (ros::Time::now() - start_time_).toSec();
-  if (dt >= args_->timeout_threshold) {
-    ROS_INFO("Control(%s) fail, timeout_threshold(%f) cost_time(%f)",
-             name().c_str(), args_->timeout_threshold, dt);
-    return true;
-  } else {
-    return false;
-  }
-}
-
-double Arc::rotationRadius() const { return args_->rotation_radius; }
 
 }  // namespace control
