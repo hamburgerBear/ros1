@@ -7,9 +7,14 @@ namespace control {
   2. 从OnExit传入任务目标(Action goal)
 */
 void StateApproachWall::OnEnter() {
-  // std::shared_ptr<Arc::ArcArgs> args = std::make_shared<Arc::ArcArgs>();
+  ROS_INFO("StateApproachWall::OnEnter");
   control_ = std::make_unique<Arc>("arc", Owner().injector_);
-  // control_->setGoal(args);
+
+  std::vector<Eigen::Vector3d> path;
+  path.emplace_back(toRad(80.0), 0.0, 0.0);
+  std::shared_ptr<Arc::ArcArgs> args =
+      std::make_shared<Arc::ArcArgs>(path, 0.1, -0.15);
+  control_->setGoal(args);
 }
 
 void StateApproachWall::Update() { control_->update(); }
@@ -18,11 +23,11 @@ void StateApproachWall::OnExit() {}
 
 Transition StateApproachWall::GetTransition() {
   if (control_->isFinish() || control_->isFail())
-    return SiblingTransition<StateForward>();
+    return SiblingTransition<StateForward>(0.02);
   else if (isFrontSideApproach())
     return SiblingTransition<StateFollowWall>();
   else if (isSideApproach())
-    return SiblingTransition<StateForward>();
+    return SiblingTransition<StateForward>(0.02);
   else
     return NoTransition();
 }

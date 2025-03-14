@@ -3,6 +3,7 @@
 namespace control {
 
 void StateForward::OnEnter(const double& forward_distance) {
+  ROS_INFO("StateForward::OnEnter");
   control_ = std::make_unique<Translation>("translation", Owner().injector_);
 
   std::vector<Eigen::Vector3d> path;

@@ -12,9 +12,9 @@ class ControlBase {
         : target_path(path),
           target_speed(speed),
           max_vel_x(10.0),
-          min_vel_x(10.0),
+          min_vel_x(0.05),
           max_vel_theta(10.0),
-          min_vel_theta(10.0),
+          min_vel_theta(0.3),
           max_acc_x(10.0),
           max_dcc_x(10.0),
           max_acc_theta(10.0) {}
