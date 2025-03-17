@@ -28,7 +28,7 @@ ControlComponent::ControlComponent() {
                                   &ControlComponent::stagePoseCB, this);
   sub_odom_ = nh_.subscribe("/odom", 1, &ControlComponent::odomCB, this);
   sub_stage_bumper_ =
-      nh_.subscribe("/bump_0", 1, &ControlComponent::stageBumperCB, this);
+      nh_.subscribe("/bump", 1, &ControlComponent::stageBumperCB, this);
   sub_static_tf_ =
       nh_.subscribe("/tf_static", 1, &ControlComponent::staticTfCB, this);
   pub_cmd_vel_ = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);

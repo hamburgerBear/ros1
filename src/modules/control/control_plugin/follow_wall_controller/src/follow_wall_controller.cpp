@@ -16,6 +16,7 @@ bool FollowWallController::init(const std::string& name,
   std::cout << "沿墙初始化状态机" << std::endl;
   state_machine_->Initialize<StateRoot>(this);
 
+  follow_dir_ = -1.0;
   //插件初始化中获得ROS参数，
   //单独增加一个setGoal的函数在插件中
   //创建发布器
@@ -28,9 +29,7 @@ bool FollowWallController::init(const std::string& name,
 }
 
 PluginStage FollowWallController::run() {
-  ROS_INFO("RUNNING....");
-
-  std::cout << "沿墙运行中" << std::endl;
+  ros::Time start_time = ros::Time::now();
   bool ok = toBaselink(injector_->scan_, base_to_laser_, injector_->odom_deque_,
                        pointcloud_);
   discretePointcloud(pointcloud_, discrete_pointcloud_);
@@ -40,18 +39,21 @@ PluginStage FollowWallController::run() {
   static int i = 0;
   PluginStage stage;
   i++;
-  if (i < 1000) {
+  if (i < 10000) {
     stage.stage = PluginStage::Stage::RUNNING;
   } else {
     stage.stage = PluginStage::Stage::SUCCEEDED;
   }
   state_machine_->ProcessStateTransitions();
   state_machine_->UpdateStates();
+  ros::Time end_time = ros::Time::now();
+  double dt = (end_time - start_time).toSec();
+  ROS_INFO("dt = %f", dt);
   usleep(1000 * 50);  // TODO:check this
   return stage;
 }
 
-double FollowWallController::getFollowDir() const { return -1.0; }
+double FollowWallController::getFollowDir() const { return follow_dir_; }
 
 double FollowWallController::getLateralDistanceFromScan(
     const double& angle1, const double& angle2) const {
@@ -61,8 +63,8 @@ double FollowWallController::getLateralDistanceFromScan(
   for (double angle = min; angle <= max; angle += 1.0f) {
     int angle180 = round(angle);
     unsigned int angle360 = to360(angle180);
-    lateral_distance =
-        std::min(fabs(discrete_pointcloud_[angle360].first), lateral_distance);
+    lateral_distance = std::min(fabs(discrete_pointcloud_[angle360].second.y()),
+                                lateral_distance);
   }
 
   return lateral_distance;

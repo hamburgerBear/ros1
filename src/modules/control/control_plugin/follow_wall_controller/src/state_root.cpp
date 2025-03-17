@@ -9,6 +9,7 @@ void StateRoot::Update() { ROS_INFO("StateRoot::Update"); }
 void StateRoot::OnExit() { ROS_INFO("StateRoot::OnExit"); }
 
 Transition StateRoot::GetTransition() {
+  std::cout << "root transition" << std::endl;
   return InnerEntryTransition<StateFollowWall>();
 }
 

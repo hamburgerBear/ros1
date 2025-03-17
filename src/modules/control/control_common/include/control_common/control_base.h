@@ -43,10 +43,10 @@ class ControlBase {
   virtual void update() = 0;
 
   virtual bool isFinish() {
-    if (accumulated_distance_ >= targetDistance()) {
+    if (accumulated_distance_ >= fabs(targetDistance())) {
       ROS_INFO(
           "Control(%s) finish, desired_distance(%f) accumulation_distance(%f)",
-          name().c_str(), targetDistance(), accumulated_distance_);
+          name().c_str(), fabs(targetDistance()), accumulated_distance_);
       return true;
     } else
       return false;
@@ -72,7 +72,7 @@ class ControlBase {
   std::string name() { return name_; }
   DependencyInjector::Ptr injector() { return injector_; }
   std::vector<Eigen::Vector3d> targetPath() const { return args_->target_path; }
-  double targetDistance() const { return fabs(args_->target_path[0].x()); }
+  double targetDistance() const { return args_->target_path[0].x(); }
   double targetSpeed() const { return args_->target_speed; }
   double maxVelX() const { return args_->max_vel_x; }
   double minVelX() const { return args_->min_vel_x; }

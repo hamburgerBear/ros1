@@ -23,7 +23,9 @@ Transition StateForward::GetTransition() {
       return SiblingTransition<StateApproachWall>();
     else
       return SiblingTransition<StateFollowWall>();
-  } else
+  } else if (Owner().injector()->collision())
+    return SiblingTransition<StateCollision>();
+  else
     return NoTransition();
 }
 

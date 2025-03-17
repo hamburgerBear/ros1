@@ -39,7 +39,7 @@ class FollowWallController : public PluginBase {
   DiscretePointCloud discrete_pointcloud_;  //离散的激光点云
   boost::shared_ptr<Params> params_;
   boost::shared_ptr<Visualization> visualization_;
-
+  double follow_dir_;
   //雷达数据去畸变、雷达数据坐标系变换、雷达数据稀疏化
 };
 
@@ -79,9 +79,11 @@ struct StateCollision : StateWithOwner<FollowWallController> {
   virtual Transition GetTransition();
 
  private:
-  // std::unique_ptr<Translation> backward_;
-  // std::unique_ptr<Translation> rotation_;
-  // std::string which_control_;
+  double calcRatationTheta();
+
+  std::unique_ptr<Translation> backward_;
+  std::unique_ptr<Rotation> rotation_;
+  std::string which_control_;
 };
 
 struct StateForward : StateWithOwner<FollowWallController> {

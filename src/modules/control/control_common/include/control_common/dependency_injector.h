@@ -13,6 +13,11 @@
 #include <string>
 
 namespace control {
+
+// enum Bumper {
+//   LEFT = 0; LEFT_FRONT = 1; FRONT = 2; RIGHT_FRONT = 3; RIGHT = 4;
+// };
+
 class DependencyInjector {
  public:
   using Ptr = std::shared_ptr<DependencyInjector>;
@@ -26,6 +31,26 @@ class DependencyInjector {
     // static_tf_ = boost::make_shared<tf2_msgs::TFMessagePtr>();
   };
   ~DependencyInjector() = default;
+  void velocity(const double& v, const double w) {
+    cmd_vel_.linear.x = v;
+    cmd_vel_.angular.z = w;
+    last_vel.linear.x = v;
+    last_vel.angular.z = w;
+  }
+
+  void velocity(const geometry_msgs::Twist& twist) {
+    velocity(twist.linear.x, twist.angular.z);
+  }
+
+  geometry_msgs::Twist lastVel() { return last_vel; }
+  bool collision() const {
+    for (size_t i = 0; i < bumper_->data.size(); ++i)
+      if (bumper_->data[i]) {
+        ROS_WARN("happend collision.");
+        return true;
+      }
+    return false;
+  }
 
   std::string plugin_name_;
   std::string algorithm_name_;
@@ -36,7 +61,7 @@ class DependencyInjector {
   std::deque<nav_msgs::OdometryPtr> odom_deque_;
   std_msgs::ByteMultiArrayPtr bumper_;
   tf2_msgs::TFMessage::ConstPtr static_tf_;
-  geometry_msgs::Twist cmd_vel_;
+  geometry_msgs::Twist cmd_vel_, last_vel;
 };
 
 }  // namespace control

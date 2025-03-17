@@ -13,7 +13,10 @@ void StateApproachWall::OnEnter() {
   control_->setGoal(args);
 }
 
-void StateApproachWall::Update() { control_->update(); }
+void StateApproachWall::Update() {
+  control_->update();
+  // Owner().injector()->velocity(0.0, 0.0);
+}
 
 void StateApproachWall::OnExit() {}
 
@@ -24,6 +27,8 @@ Transition StateApproachWall::GetTransition() {
     return SiblingTransition<StateFollowWall>();
   else if (isSideApproach())
     return SiblingTransition<StateForward>(0.025);
+  else if (Owner().injector()->collision())
+    return SiblingTransition<StateCollision>();
   else
     return NoTransition();
 }

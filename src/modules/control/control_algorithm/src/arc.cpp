@@ -23,6 +23,7 @@ void Arc::setGoal(std::shared_ptr<Args> args) {
 }
 
 void Arc::update() {
+  ros::Time start_time = ros::Time::now();
   double v = targetSpeed();
   double w = targetSpeed() / (rotationRadius() * sign(targetDistance()));
   injector()->cmd_vel_.linear.x = v;
@@ -40,7 +41,7 @@ void Arc::update() {
   accumulated_distance_ += distance;
   last_pose_ = current_pose;
 
-  double dt = (ros::Time::now() - start_time_).toSec() * 1000.0;
+  double dt = (ros::Time::now() - start_time).toSec() * 1000.0;
   ROS_INFO_THROTTLE(
       10.0,
       "Control(%s) cmd_vel(%f, %f) accumulation_distance(%f) cost_time(%f)ms",
